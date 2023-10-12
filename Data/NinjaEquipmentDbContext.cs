@@ -39,6 +39,7 @@ namespace Ninja.Data
                 .HasOne(p => p.Equipment)
                 .WithMany(e => e.PurchaseHistories)
                 .HasForeignKey(p => p.EquipmentId);
+
         }
     }
 }
