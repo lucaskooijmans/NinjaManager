@@ -30,7 +30,6 @@ namespace Web;
         if (env.IsDevelopment())
         {
             app.UseDeveloperExceptionPage();
-
         }
         else
         {
@@ -40,16 +39,10 @@ namespace Web;
 
         // Use HTTPS redirection (optional but recommended for production)
         app.UseHttpsRedirection();
-
-        // Serve static files (e.g., CSS, JavaScript, images)
         app.UseStaticFiles();
 
-        // Enable routing
         app.UseRouting();
 
-        // Add authentication and authorization middleware here if needed.
-
-        // Define your endpoints and route to Razor Pages
         app.UseEndpoints(endpoints =>
         {
             endpoints.MapRazorPages();
