@@ -58,6 +58,7 @@ namespace Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,Gold")] Ninja ninja)
         {
+            ModelState.Remove("NinjaEquipment");
             if (ModelState.IsValid)
             {
                 _context.Add(ninja);
