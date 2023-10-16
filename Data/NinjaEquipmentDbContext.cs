@@ -1,45 +1,36 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Ninja.Data.Models;
+﻿using Data.Models;
+using Microsoft.EntityFrameworkCore;
 
-namespace Ninja.Data
+namespace Data;
+
+public class NinjaEquipmentDbContext : DbContext
 {
-    public class NinjaEquipmentDbContext : DbContext
+    public NinjaEquipmentDbContext(DbContextOptions<NinjaEquipmentDbContext> options) : base(options)
     {
-        public NinjaEquipmentDbContext(DbContextOptions<NinjaEquipmentDbContext> options)
-            : base(options)
-        {
-        }
+    }
+    // Default constructor for design-time operations
+    public NinjaEquipmentDbContext()
+    {
+    }
+    public DbSet<Ninja> Ninjas { get; set; }
+    public DbSet<Equipment> Equipments { get; set; }
+    public DbSet<NinjaEquipment> NinjaEquipment { get; set; }
 
-        public DbSet<User> Users { get; set; }
-        public DbSet<Equipment> Equipments { get; set; }
-        public DbSet<Inventory> Inventories { get; set; }
-        public DbSet<PurchaseHistory> PurchaseHistories { get; set; }
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        // Define the primary keys and foreign keys for the NinjaEquipment table.
+        modelBuilder.Entity<NinjaEquipment>()
+            .HasKey(ne => new { ne.NinjaId, ne.EquipmentId });
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<Inventory>()
-                .HasKey(i => new { i.UserId, i.EquipmentId });
+        // Define the many-to-many relationship between Ninja and Equipment.
+        modelBuilder.Entity<NinjaEquipment>()
+            .HasOne(ne => ne.Ninja)
+            .WithMany(n => n.NinjaEquipment)
+            .HasForeignKey(ne => ne.NinjaId);
 
-            modelBuilder.Entity<Inventory>()
-                .HasOne(i => i.User)
-                .WithMany(u => u.Inventories)
-                .HasForeignKey(i => i.UserId);
-
-            modelBuilder.Entity<Inventory>()
-                .HasOne(i => i.Equipment)
-                .WithMany(e => e.Inventories)
-                .HasForeignKey(i => i.EquipmentId);
-
-            modelBuilder.Entity<PurchaseHistory>()
-                .HasOne(p => p.User)
-                .WithMany(u => u.PurchaseHistories)
-                .HasForeignKey(p => p.UserId);
-
-            modelBuilder.Entity<PurchaseHistory>()
-                .HasOne(p => p.Equipment)
-                .WithMany(e => e.PurchaseHistories)
-                .HasForeignKey(p => p.EquipmentId);
-
-        }
+        modelBuilder.Entity<NinjaEquipment>()
+            .HasOne(ne => ne.Equipment)
+            .WithMany()
+            .HasForeignKey(ne => ne.EquipmentId);
     }
 }
