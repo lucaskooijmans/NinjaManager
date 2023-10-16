@@ -1,38 +1,61 @@
-﻿
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
+﻿using Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Ninja.Data.Models;  // Replace with the actual namespace for your models
-using Ninja.Data;    // Replace with the actual namespace for your data access
 
-namespace Web
-{
+namespace Web;
+
     public class Startup
+{
+    private readonly IConfiguration _configuration;
+
+    public Startup(IConfiguration configuration)
     {
-        public void ConfigureServices(IServiceCollection services)
+        _configuration = configuration;
+    }
+
+    public void ConfigureServices(IServiceCollection services)
+    {
+        // Configure the database context using the connection string from appsettings.json
+        services.AddDbContext<Data.NinjaEquipmentDbContext>(options =>
+        options.UseSqlServer(
+                  _configuration.GetConnectionString("DefaultConnection")));
+
+
+        // Add your services here
+        services.AddRazorPages();
+    }
+
+    public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+    {
+        if (env.IsDevelopment())
         {
-            services.AddRazorPages();
+            app.UseDeveloperExceptionPage();
+
+        }
+        else
+        {
+            app.UseExceptionHandler("/Home/Error");
+            app.UseHsts();
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-        {
-            if (!env.IsDevelopment())
-            {
-                app.UseExceptionHandler("/Error");
-                app.UseHsts();
-            }
+        // Use HTTPS redirection (optional but recommended for production)
+        app.UseHttpsRedirection();
 
-            app.UseHttpsRedirection();
-            app.UseStaticFiles();
-            app.UseRouting();
-            app.UseAuthorization();
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapRazorPages();
-            });
-        }
+        // Serve static files (e.g., CSS, JavaScript, images)
+        app.UseStaticFiles();
+
+        // Enable routing
+        app.UseRouting();
+
+        // Add authentication and authorization middleware here if needed.
+
+        // Define your endpoints and route to Razor Pages
+        app.UseEndpoints(endpoints =>
+        {
+            endpoints.MapRazorPages();
+            endpoints.MapControllerRoute(
+                name: "default",
+                pattern: "{controller=Home}/{action=Index}/{id?}");
+        });
     }
 }
