@@ -1,0 +1,67 @@
+﻿@model Web.ViewModels.EquipmentViewModel
+
+@using Data.Enum;
+@{
+    ViewData["Title"] = "Store";
+}
+
+<h1>Store</h1>
+<a> @Model.Ninja.Name</a>
+<form asp-action="Index" asp-controller="Equipments" method="post">
+    <div class="form-group">
+        <label asp-for="SelectedCategory">Select Category:</label>
+        <select asp-for="SelectedCategory" asp-items="Html.GetEnumSelectList<EquipmentCategory>()" class="form-control">
+            <option value="">-- All Categories --</option>
+        </select>
+        <button type="submit" class="btn btn-primary">Filter</button>
+    </div>
+</form>
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Category</th>
+            <th>Strength</th>
+            <th>Intelligence</th>
+            <th>Agility</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in @Model.EquipmentList)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ValueInGold)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Category)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Strength)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Intelligence)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Agility)
+                </td>
+                <td>
+                <form method="post" asp-controller="Equipments" asp-action="buy">
+                    <input type="hidden" name="equipmentId" value="@item.Id" />
+                    <input type="hidden" name="ninjaId" value="@Model.Ninja.Id"/>
+                    <button type="submit" class="btn btn-primary">Buy</button>
+                </form>
+                </td>
+            </tr>
+        }
+      
+    </tbody>
+</table>

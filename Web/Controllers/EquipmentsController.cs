@@ -1,32 +1,85 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using Data;
+﻿using Data;
+using Data.Enum;
 using Data.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Web.ViewModels;
 
 namespace Web.Controllers
 {
     public class EquipmentsController : Controller
     {
         private readonly NinjaEquipmentDbContext _context;
-
+        private EquipmentViewModel equipmentViewModel;
         public EquipmentsController(NinjaEquipmentDbContext context)
         {
             _context = context;
         }
 
         // GET: Equipments
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Store(int ninjaId)
         {
-              return _context.Equipments != null ? 
-                          View(await _context.Equipments.ToListAsync()) :
-                          Problem("Entity set 'NinjaEquipmentDbContext.Equipments'  is null.");
+            equipmentViewModel = new EquipmentViewModel();
+            equipmentViewModel.Ninja = _context.Ninjas.Where(e => e.Id == ninjaId).FirstOrDefault();
+
+            equipmentViewModel.EquipmentList = await _context.Equipments.ToListAsync();
+            return View(equipmentViewModel);
         }
 
+        [HttpPost]
+        public IActionResult Index(EquipmentCategory? selectedCategory)
+        {
+            var equipmentList = _context.Equipments.ToList();
+
+
+            if (selectedCategory.HasValue)
+            {
+                equipmentList = equipmentList.Where(e => e.Category == selectedCategory.Value.ToString()).ToList();
+            }
+
+            var viewModel = new EquipmentViewModel
+            {
+                EquipmentList = equipmentList,
+                SelectedCategory = selectedCategory
+            };
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public IActionResult buy(int equipmentId, int ninjaId)
+        {
+            var ninja = _context.Ninjas.Where(e => e.Id == ninjaId).First();
+            var equipment = _context.Equipments.Where(e => e.Id == equipmentId).First();
+            if (ninja != null && equipment != null)
+            {
+                // Calculate the cost of the equipment
+                int equipmentCost = equipment.ValueInGold;
+
+                // Check if the ninja has enough gold to make the purchase
+                if (ninja.Gold >= equipmentCost)
+                {
+                    // Deduct the cost from the ninja's gold
+                    ninja.Gold -= equipmentCost;
+
+                    // Create a new NinjaEquipment entry to represent the purchase
+                    var ninjaEquipment = new NinjaEquipment
+                    {
+                        NinjaId = ninja.Id,
+                        EquipmentId = equipment.Id,
+                        ValueAtPurchase = equipmentCost
+                    };
+
+                    // Add the NinjaEquipment entry to the database
+                    _context.NinjaEquipment.Add(ninjaEquipment);
+
+                    // Save changes to the database
+                    _context.SaveChanges();
+                    
+                }
+            }
+            return RedirectToAction("Index", "Home");
+        }
         // GET: Equipments/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -60,9 +113,12 @@ namespace Web.Controllers
         {
             if (ModelState.IsValid)
             {
+                var category = Enum.Parse(typeof(EquipmentCategory), equipment.Category).ToString(); // parse categorynumber to stringvalue
+                equipment.Category = category;
                 _context.Add(equipment);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
+
             }
             return View(equipment);
         }
@@ -150,14 +206,14 @@ namespace Web.Controllers
             {
                 _context.Equipments.Remove(equipment);
             }
-            
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool EquipmentExists(int id)
         {
-          return (_context.Equipments?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.Equipments?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

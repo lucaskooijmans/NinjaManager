@@ -1,40 +1,38 @@
-﻿@model IEnumerable<Data.Models.Equipment>
+﻿@model Web.ViewModels.EquipmentViewModel
 
+@using Data.Enum;
 @{
     ViewData["Title"] = "Index";
 }
 
 <h1>Index</h1>
-
+<a> @Model.Ninja.Name</a>
+<form asp-action="Index" asp-controller="Equipments" method="post">
+    <div class="form-group">
+        <label asp-for="SelectedCategory">Select Category:</label>
+        <select asp-for="SelectedCategory" asp-items="Html.GetEnumSelectList<EquipmentCategory>()" class="form-control">
+            <option value="">-- All Categories --</option>
+        </select>
+        <button type="submit" class="btn btn-primary">Filter</button>
+    </div>
+</form>
 <p>
     <a asp-action="Create">Create New</a>
 </p>
 <table class="table">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ValueInGold)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Category)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Strength)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Intelligence)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Agility)
-            </th>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Category</th>
+            <th>Strength</th>
+            <th>Intelligence</th>
+            <th>Agility</th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+@foreach (var item in @Model.EquipmentList) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Name)
