@@ -24,8 +24,4 @@
     <None Remove="Repository\" />
     <None Remove="Interfaces\" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Repository\" />
-    <Folder Include="Interfaces\" />
-  </ItemGroup>
 </Project>
