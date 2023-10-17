@@ -7,7 +7,8 @@ public class NinjaEquipment
     public int NinjaId { get; set; }
     [Key]
     public int EquipmentId { get; set; }
-    public double ValueAtPurchase { get; set; }
+    [Range(0, int.MaxValue)]
+    public int ValueAtPurchase { get; set; }
     public Ninja Ninja { get; set; }
     public Equipment Equipment { get; set; }
 }

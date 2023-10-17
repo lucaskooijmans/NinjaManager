@@ -3,6 +3,7 @@ using Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.Migrations
 {
     [DbContext(typeof(NinjaEquipmentDbContext))]
-    partial class NinjaEquipmentDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231016183304_changedRequirements")]
+    partial class ChangedRequirements
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -52,7 +55,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Equipments", (string)null);
+                    b.ToTable("Equipments");
                 });
 
             modelBuilder.Entity("Data.Models.Ninja", b =>
@@ -73,7 +76,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Ninjas", (string)null);
+                    b.ToTable("Ninjas");
                 });
 
             modelBuilder.Entity("Data.Models.NinjaEquipment", b =>
@@ -91,7 +94,7 @@ namespace Data.Migrations
 
                     b.HasIndex("EquipmentId");
 
-                    b.ToTable("NinjaEquipment", (string)null);
+                    b.ToTable("NinjaEquipment");
                 });
 
             modelBuilder.Entity("Data.Models.NinjaEquipment", b =>
