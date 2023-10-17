@@ -1,6 +1,7 @@
 ﻿using Data;
 using Data.Enum;
 using Data.Models;
+using Data.Repository;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Web.ViewModels;
@@ -11,27 +12,30 @@ namespace Web.Controllers
     {
         private readonly NinjaEquipmentDbContext _context;
         private EquipmentViewModel equipmentViewModel;
+        private readonly Repository repository;
         public EquipmentsController(NinjaEquipmentDbContext context)
         {
             _context = context;
+            repository = new Repository(context);
         }
 
         // GET: Equipments
-        public async Task<IActionResult> Store(int ninjaId)
+        public IActionResult Store(int ninjaId)
         {
             equipmentViewModel = new EquipmentViewModel
             {
                 Ninja = _context.Ninjas.Where(e => e.Id == ninjaId).First(),
 
-                EquipmentList = await _context.Equipments.ToListAsync()
+                EquipmentList = repository.GetEquipmentList()
             };
+            equipmentViewModel.Ninja.NinjaEquipment = repository.GetOwnedEquipmentList(ninjaId);
             return View(equipmentViewModel);
         }
         public async Task<IActionResult> Index()
         {
             equipmentViewModel = new EquipmentViewModel
             {
-                EquipmentList = await _context.Equipments.ToListAsync()
+                EquipmentList = repository.GetEquipmentList(),
             };
             return View(equipmentViewModel);
         }
@@ -39,7 +43,7 @@ namespace Web.Controllers
         [HttpPost]
         public IActionResult Filter(EquipmentCategory? selectedCategory, int? ninjaId, string returnUrl)
         {
-            var equipmentList = _context.Equipments.ToList();
+            var equipmentList = repository.GetEquipmentList();
 
 
             if (selectedCategory.HasValue)
@@ -60,7 +64,7 @@ namespace Web.Controllers
             }
             else if (returnUrl == "Store")
             {
-                viewModel.Ninja = _context.Ninjas.Where(e => e.Id == ninjaId).First();
+                viewModel.Ninja = repository.GetNinja((int)ninjaId);
                 return View("Store", viewModel);
             }
             return View();
@@ -69,11 +73,11 @@ namespace Web.Controllers
         [HttpPost]
         public IActionResult Buy(int equipmentId, int ninjaId)
         {
-            var ninja = _context.Ninjas.Where(e => e.Id == ninjaId).First();
-            var equipment = _context.Equipments.Where(e => e.Id == equipmentId).First();
+            var ninja = repository.GetNinja(ninjaId);
+            var equipment = repository.GetEquipment(equipmentId);
 
             var equipmentCategory = equipment.Category;
-            var existingCategoryEquipment = _context.NinjaEquipment.Where(ne => ne.NinjaId == ninjaId).Select(ne => ne.Equipment).FirstOrDefault(e => e.Category == equipmentCategory);
+            Equipment? existingCategoryEquipment = repository.GetOwnedEquipmentList(ninjaId).Select(ne => ne.Equipment).FirstOrDefault(e => e?.Category == equipmentCategory);
 
 
             if (ninja != null && equipment != null && existingCategoryEquipment == null)
@@ -109,11 +113,10 @@ namespace Web.Controllers
             equipmentViewModel = new EquipmentViewModel
             {
                 Ninja = ninja,
-                EquipmentList = _context.Equipments.ToList()
+                EquipmentList = repository.GetEquipmentList()
             };
             // return to store
             return View("Store", equipmentViewModel);
-
         }
         // GET: Equipments/Details/5
         public async Task<IActionResult> Details(int? id)
