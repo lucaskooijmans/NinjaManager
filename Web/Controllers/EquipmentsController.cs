@@ -167,6 +167,8 @@ namespace Web.Controllers
             {
                 try
                 {
+                    var category = Enum.Parse(typeof(EquipmentCategory), equipment.Category).ToString(); // parse categorynumber to stringvalue
+                    equipment.Category = category;
                     _context.Update(equipment);
                     await _context.SaveChangesAsync();
                 }
