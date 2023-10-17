@@ -64,7 +64,6 @@
                     <input type="hidden" name="equipmentId" value="@item.Id" />
                     <input type="hidden" name="ninjaId" value="@Model.Ninja.Id"/>
                     <button type="submit" class="btn btn-primary">Buy</button>
-                        @Html.ValidationMessageFor(model => model.Ninja.Name, "", new { @class = "text-danger" })
                 </form>
                 </td>
             </tr>
