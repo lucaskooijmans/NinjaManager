@@ -5,7 +5,7 @@
 namespace Data.Migrations
 {
     /// <inheritdoc />
-    public partial class changedRequirements : Migration
+    public partial class ChangedRequirements : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

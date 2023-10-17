@@ -52,7 +52,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Equipments");
+                    b.ToTable("Equipments", (string)null);
                 });
 
             modelBuilder.Entity("Data.Models.Ninja", b =>
@@ -73,7 +73,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Ninjas");
+                    b.ToTable("Ninjas", (string)null);
                 });
 
             modelBuilder.Entity("Data.Models.NinjaEquipment", b =>
@@ -91,7 +91,7 @@ namespace Data.Migrations
 
                     b.HasIndex("EquipmentId");
 
-                    b.ToTable("NinjaEquipment");
+                    b.ToTable("NinjaEquipment", (string)null);
                 });
 
             modelBuilder.Entity("Data.Models.NinjaEquipment", b =>
