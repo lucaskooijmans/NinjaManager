@@ -7,7 +7,15 @@
 
 <h1>Store</h1>
 <a> Name: @Model.Ninja.Name</a>
-<form asp-action="Index" asp-controller="Equipments" method="post">
+<a> Gold: @Model.Ninja.Gold</a>
+<div class="text-danger">
+    @Html.ValidationSummary()
+</div>
+<form method="post" asp-action="Filter" asp-controller="Equipments">
+    <input type="hidden" name="returnUrl" value="Store"/>
+    
+    <input type="hidden" name="ninjaId" value="@Model.Ninja.Id" />
+
     <div class="form-group">
         <label asp-for="SelectedCategory">Select Category:</label>
         <select asp-for="SelectedCategory" asp-items="Html.GetEnumSelectList<EquipmentCategory>()" class="form-control">
@@ -56,6 +64,7 @@
                     <input type="hidden" name="equipmentId" value="@item.Id" />
                     <input type="hidden" name="ninjaId" value="@Model.Ninja.Id"/>
                     <button type="submit" class="btn btn-primary">Buy</button>
+                        @Html.ValidationMessageFor(model => model.Ninja.Name, "", new { @class = "text-danger" })
                 </form>
                 </td>
             </tr>

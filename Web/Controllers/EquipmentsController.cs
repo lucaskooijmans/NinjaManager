@@ -21,7 +21,7 @@ namespace Web.Controllers
         {
             equipmentViewModel = new EquipmentViewModel
             {
-                Ninja = _context.Ninjas.Where(e => e.Id == ninjaId).FirstOrDefault(),
+                Ninja = _context.Ninjas.Where(e => e.Id == ninjaId).First(),
 
                 EquipmentList = await _context.Equipments.ToListAsync()
             };
@@ -37,7 +37,7 @@ namespace Web.Controllers
         }
 
         [HttpPost]
-        public IActionResult Index(EquipmentCategory? selectedCategory)
+        public IActionResult Filter(EquipmentCategory? selectedCategory, int? ninjaId, string returnUrl)
         {
             var equipmentList = _context.Equipments.ToList();
 
@@ -53,7 +53,17 @@ namespace Web.Controllers
                 SelectedCategory = selectedCategory
             };
 
-            return View(viewModel);
+
+            if (returnUrl == "Index")
+            {
+                return View("Index", viewModel);
+            }
+            else if (returnUrl == "Store")
+            {
+                viewModel.Ninja = _context.Ninjas.Where(e => e.Id == ninjaId).First();
+                return View("Store", viewModel);
+            }
+            return View();
         }
 
         [HttpPost]
@@ -61,18 +71,22 @@ namespace Web.Controllers
         {
             var ninja = _context.Ninjas.Where(e => e.Id == ninjaId).First();
             var equipment = _context.Equipments.Where(e => e.Id == equipmentId).First();
-            if (ninja != null && equipment != null)
+
+            var equipmentCategory = equipment.Category;
+            var existingCategoryEquipment = _context.NinjaEquipment.Where(ne => ne.NinjaId == ninjaId).Select(ne => ne.Equipment).FirstOrDefault(e => e.Category == equipmentCategory);
+
+
+            if (ninja != null && equipment != null && existingCategoryEquipment == null)
             {
-                // Calculate the cost of the equipment
+                // cost of equipment
                 int equipmentCost = equipment.ValueInGold;
 
-                // Check if the ninja has enough gold to make the purchase
+                // Check if the ninja has enough gold
                 if (ninja.Gold >= equipmentCost)
-                {
-                    // Deduct the cost from the ninja's gold
+                {                   
                     ninja.Gold -= equipmentCost;
 
-                    // Create a new NinjaEquipment entry to represent the purchase
+                    // Create new NinjaEquipment to save purchase
                     var ninjaEquipment = new NinjaEquipment
                     {
                         NinjaId = ninja.Id,
@@ -80,15 +94,26 @@ namespace Web.Controllers
                         ValueAtPurchase = equipmentCost
                     };
 
-                    // Add the NinjaEquipment entry to the database
+                    // Add NinjaEquipment to database
                     _context.NinjaEquipment.Add(ninjaEquipment);
 
-                    // Save changes to the database
+                    // Save changes to database
                     _context.SaveChanges();
-                    
+
                 }
+                // possible errors
+                else ModelState.AddModelError(string.Empty, "Not enough gold to make the purchase.");
             }
-            return RedirectToAction("Index", "Home");
+            else ModelState.AddModelError(string.Empty, "Ninja already has equipment in catagory: " + equipment.Category);
+
+            equipmentViewModel = new EquipmentViewModel
+            {
+                Ninja = ninja,
+                EquipmentList = _context.Equipments.ToList()
+            };
+            // return to store
+            return View("Store", equipmentViewModel);
+
         }
         // GET: Equipments/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -127,9 +152,11 @@ namespace Web.Controllers
                 equipment.Category = category;
                 _context.Add(equipment);
                 await _context.SaveChangesAsync();
-                equipmentViewModel = new EquipmentViewModel();
-                equipmentViewModel.EquipmentList = _context.Equipments.ToList();
-                return View("Index",equipmentViewModel);
+                equipmentViewModel = new EquipmentViewModel
+                {
+                    EquipmentList = _context.Equipments.ToList()
+                };
+                return View("Index", equipmentViewModel);
 
             }
             return View(equipment);
