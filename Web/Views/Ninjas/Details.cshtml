@@ -4,27 +4,64 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
+<h1>@Html.DisplayFor(model => model.Name)</h1>
 
 <div>
-    <h4>Ninja</h4>
     <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Gold)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Gold)
-        </dd>
-    </dl>
+    <p>
+        Gold in wallet: @Html.DisplayFor(model => model.Gold)
+    </p>
+    <p>
+        Total strength:
+        <br />
+        Total Agility:
+        <br />
+        Total Intelligence:
+    </p>
+    <p>
+        Gear Value: 
+    </p>
+    <section class="layout" style="width:100%;display:flex;gap:16px;">
+        <div class="grow1" style="flex-grow:1;">
+            <div class="head">
+                Head:
+                <br />
+                Strength:
+                <br />
+                Agility:
+                <br />
+                Intelligence:
+            </div>
+
+            <div class="hand">
+                Hands:
+                <br />
+                Strength:
+                <br />
+                Agility:
+                <br />
+                Intelligence:
+            </div>
+
+            <div class="feet">
+                Feet:
+                <br />
+                Strength:
+                <br />
+                Agility:
+                <br />
+                Intelligence:
+            </div>
+        </div>
+        <div class="grow1" style="flex-grow:1;">
+
+        </div>
+        <div class="grow1" style="flex-grow:1;">
+
+        </div>
+    </section>
 </div>
-<div>
+@*<div>
     <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
     <a asp-action="Index">Back to List</a>
-</div>
+</div>*@
