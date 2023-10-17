@@ -12,7 +12,7 @@ namespace Data.Migrations
 {
     [DbContext(typeof(NinjaEquipmentDbContext))]
     [Migration("20231016183304_changedRequirements")]
-    partial class changedRequirements
+    partial class ChangedRequirements
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

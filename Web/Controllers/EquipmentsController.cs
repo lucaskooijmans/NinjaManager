@@ -19,10 +19,20 @@ namespace Web.Controllers
         // GET: Equipments
         public async Task<IActionResult> Store(int ninjaId)
         {
-            equipmentViewModel = new EquipmentViewModel();
-            equipmentViewModel.Ninja = _context.Ninjas.Where(e => e.Id == ninjaId).FirstOrDefault();
+            equipmentViewModel = new EquipmentViewModel
+            {
+                Ninja = _context.Ninjas.Where(e => e.Id == ninjaId).FirstOrDefault(),
 
-            equipmentViewModel.EquipmentList = await _context.Equipments.ToListAsync();
+                EquipmentList = await _context.Equipments.ToListAsync()
+            };
+            return View(equipmentViewModel);
+        }
+        public async Task<IActionResult> Index()
+        {
+            equipmentViewModel = new EquipmentViewModel
+            {
+                EquipmentList = await _context.Equipments.ToListAsync()
+            };
             return View(equipmentViewModel);
         }
 
@@ -47,7 +57,7 @@ namespace Web.Controllers
         }
 
         [HttpPost]
-        public IActionResult buy(int equipmentId, int ninjaId)
+        public IActionResult Buy(int equipmentId, int ninjaId)
         {
             var ninja = _context.Ninjas.Where(e => e.Id == ninjaId).First();
             var equipment = _context.Equipments.Where(e => e.Id == equipmentId).First();
@@ -117,7 +127,9 @@ namespace Web.Controllers
                 equipment.Category = category;
                 _context.Add(equipment);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                equipmentViewModel = new EquipmentViewModel();
+                equipmentViewModel.EquipmentList = _context.Equipments.ToList();
+                return View("Index",equipmentViewModel);
 
             }
             return View(equipment);

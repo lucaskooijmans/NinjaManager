@@ -6,7 +6,7 @@
 }
 
 <h1>Store</h1>
-<a> @Model.Ninja.Name</a>
+<a> Name: @Model.Ninja.Name</a>
 <form asp-action="Index" asp-controller="Equipments" method="post">
     <div class="form-group">
         <label asp-for="SelectedCategory">Select Category:</label>
@@ -16,9 +16,7 @@
         <button type="submit" class="btn btn-primary">Filter</button>
     </div>
 </form>
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+
 <table class="table">
     <thead>
         <tr>
@@ -54,14 +52,13 @@
                     @Html.DisplayFor(modelItem => item.Agility)
                 </td>
                 <td>
-                <form method="post" asp-controller="Equipments" asp-action="buy">
+                <form method="post" asp-controller="Equipments" asp-action="Buy">
                     <input type="hidden" name="equipmentId" value="@item.Id" />
                     <input type="hidden" name="ninjaId" value="@Model.Ninja.Id"/>
                     <button type="submit" class="btn btn-primary">Buy</button>
                 </form>
                 </td>
             </tr>
-        }
-      
+        }  
     </tbody>
 </table>

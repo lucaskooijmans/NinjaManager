@@ -9,7 +9,7 @@ public class Ninja
     public int Id { get; set; }
     [Required]
     [StringLength(100)]
-    public string Name { get; set; }
+    public required string Name { get; set; }
     [Required]
     [Range(0, int.MaxValue)] 
     public int Gold { get; set; }
