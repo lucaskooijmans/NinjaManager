@@ -12,45 +12,45 @@
         Gold in wallet: @Html.DisplayFor(model => model.Gold)
     </p>
     <p>
-        Total strength: @ViewData["TotalStrength"]
+        Total strength: @Model.NinjaEquipment.Sum(ne => ne.Equipment.Strength)
         <br />
-        Total Agility: @ViewData["TotalAgility"]
+        Total Agility: @Model.NinjaEquipment.Sum(ne => ne.Equipment.Agility)
         <br />
-        Total Intelligence: @ViewData["TotalIntelligence"]
+        Total Intelligence: @Model.NinjaEquipment.Sum(ne => ne.Equipment.Intelligence)
     </p>
     <p>
-        Gear Value: 
+        Total Equipment Value In Gold: @Model.NinjaEquipment.Sum(ne => ne.ValueAtPurchase) @*// Of 'ne.Equipment.ValueInGold' ?*@
     </p>
     <section class="layout" style="width:100%;display:flex;gap:16px;">
         <div class="grow1" style="flex-grow:1;">
             <div class="head" style="border:solid;">
-                Head:
+                Head: @foreach (var equipment in Model.NinjaEquipment) { if (equipment.Equipment.Category == "Head") { @equipment.Equipment.Name } }
                 <br />
-                Strength:
+                Strength: @foreach (var equipment in Model.NinjaEquipment) { if (equipment.Equipment.Category == "Head") { @equipment.Equipment.Strength } }
                 <br />
-                Agility:
+                Agility: @foreach (var equipment in Model.NinjaEquipment) { if (equipment.Equipment.Category == "Head") { @equipment.Equipment.Agility } }
                 <br />
-                Intelligence:
+                Intelligence: @foreach (var equipment in Model.NinjaEquipment) { if (equipment.Equipment.Category == "Head") { @equipment.Equipment.Intelligence } }
             </div>
             <br />
             <div class="hand" style="border:solid;">
-                Hands:
+                Hands: @foreach (var equipment in Model.NinjaEquipment) { if (equipment.Equipment.Category == "Hand") { @equipment.Equipment.Name } }
                 <br />
-                Strength:
+                Strength: @foreach (var equipment in Model.NinjaEquipment) { if (equipment.Equipment.Category == "Hand") { @equipment.Equipment.Strength } }
                 <br />
-                Agility:
+                Agility: @foreach (var equipment in Model.NinjaEquipment) { if (equipment.Equipment.Category == "Hand") { @equipment.Equipment.Agility } }
                 <br />
-                Intelligence:
+                Intelligence: @foreach (var equipment in Model.NinjaEquipment) { if (equipment.Equipment.Category == "Hand") { @equipment.Equipment.Intelligence } }
             </div>
             <br />
             <div class="feet" style="border:solid;">
-                Feet:
+                Feet: @foreach (var equipment in Model.NinjaEquipment) { if (equipment.Equipment.Category == "Feet") { @equipment.Equipment.Name } }
                 <br />
-                Strength:
+                Strength: @foreach (var equipment in Model.NinjaEquipment) { if (equipment.Equipment.Category == "Feet") { @equipment.Equipment.Strength } }
                 <br />
-                Agility:
+                Agility: @foreach (var equipment in Model.NinjaEquipment) { if (equipment.Equipment.Category == "Feet") { @equipment.Equipment.Agility } }
                 <br />
-                Intelligence:
+                Intelligence: @foreach (var equipment in Model.NinjaEquipment) { if (equipment.Equipment.Category == "Feet") { @equipment.Equipment.Intelligence } }
             </div>
         </div>
         <div class="grow1" style="flex-grow:1;">
@@ -58,33 +58,33 @@
         </div>
         <div class="grow1" style="flex-grow:1;">
             <div class="necklace" style="border:solid;">
-                Necklace:
+                Necklace: @foreach (var equipment in Model.NinjaEquipment) { if (equipment.Equipment.Category == "Necklace") { @equipment.Equipment.Name } }
                 <br />
-                Strength:
+                Strength: @foreach (var equipment in Model.NinjaEquipment) { if (equipment.Equipment.Category == "Necklace") { @equipment.Equipment.Strength } }
                 <br />
-                Agility:
+                Agility: @foreach (var equipment in Model.NinjaEquipment) { if (equipment.Equipment.Category == "Necklace") { @equipment.Equipment.Agility } }
                 <br />
-                Intelligence:
+                Intelligence: @foreach (var equipment in Model.NinjaEquipment) { if (equipment.Equipment.Category == "Necklace") { @equipment.Equipment.Intelligence } }
             </div>
             <br />
             <div class="chest" style="border:solid;">
-                Chest:
+                Chest: @foreach (var equipment in Model.NinjaEquipment) { if (equipment.Equipment.Category == "Chest") { @equipment.Equipment.Name } }
                 <br />
-                Strength:
+                Strength: @foreach (var equipment in Model.NinjaEquipment) { if (equipment.Equipment.Category == "Chest") { @equipment.Equipment.Strength } }
                 <br />
-                Agility:
+                Agility: @foreach (var equipment in Model.NinjaEquipment) { if (equipment.Equipment.Category == "Chest") { @equipment.Equipment.Agility } }
                 <br />
-                Intelligence:
+                Intelligence: @foreach (var equipment in Model.NinjaEquipment) { if (equipment.Equipment.Category == "Chest") { @equipment.Equipment.Intelligence } }
             </div>
             <br />
             <div class="ring" style="border:solid;">
-                Ring:
+                Ring: @foreach (var equipment in Model.NinjaEquipment) { if (equipment.Equipment.Category == "Ring") { @equipment.Equipment.Name } }
                 <br />
-                Strength:
+                Strength: @foreach (var equipment in Model.NinjaEquipment) { if (equipment.Equipment.Category == "Ring") { @equipment.Equipment.Strength } }
                 <br />
-                Agility:
+                Agility: @foreach (var equipment in Model.NinjaEquipment) { if (equipment.Equipment.Category == "Ring") { @equipment.Equipment.Agility } }
                 <br />
-                Intelligence:
+                Intelligence: @foreach (var equipment in Model.NinjaEquipment) { if (equipment.Equipment.Category == "Ring") { @equipment.Equipment.Intelligence } }
             </div>
         </div>
     </section>
