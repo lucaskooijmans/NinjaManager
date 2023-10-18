@@ -12,11 +12,11 @@
         Gold in wallet: @Html.DisplayFor(model => model.Gold)
     </p>
     <p>
-        Total strength:
+        Total strength: @ViewData["TotalStrength"]
         <br />
-        Total Agility:
+        Total Agility: @ViewData["TotalAgility"]
         <br />
-        Total Intelligence:
+        Total Intelligence: @ViewData["TotalIntelligence"]
     </p>
     <p>
         Gear Value: 
@@ -89,7 +89,6 @@
         </div>
     </section>
 </div>
-@*<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
+<div>
     <a asp-action="Index">Back to List</a>
-</div>*@
+</div>
