@@ -60,11 +60,22 @@
                     @Html.DisplayFor(modelItem => item.Agility)
                 </td>
                 <td>
+                    @if (Model.Ninja.NinjaEquipment != null && Model.Ninja.NinjaEquipment.Any(e => e.EquipmentId == item.Id))
+            {
+                <form method="post" asp-controller="Equipments" asp-action="Sell">
+                    <input type="hidden" name="equipmentId" value="@item.Id" />
+                    <input type="hidden" name="ninjaId" value="@Model.Ninja.Id" />
+                    <button type="submit" class="btn btn-danger">Sell</button>
+                </form>
+            }
+            else
+            {
                 <form method="post" asp-controller="Equipments" asp-action="Buy">
                     <input type="hidden" name="equipmentId" value="@item.Id" />
-                    <input type="hidden" name="ninjaId" value="@Model.Ninja.Id"/>
+                    <input type="hidden" name="ninjaId" value="@Model.Ninja.Id" />
                     <button type="submit" class="btn btn-primary">Buy</button>
                 </form>
+            }
                 </td>
             </tr>
         }  

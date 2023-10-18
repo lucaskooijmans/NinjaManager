@@ -1,4 +1,5 @@
-﻿using Data.Interfaces;
+﻿using Data.Enum;
+using Data.Interfaces;
 using Data.Models;
 
 namespace Data.Repository;
@@ -29,6 +30,11 @@ public class Repository : IRepository
     public Equipment GetEquipment(int equipmentId)
     {
         return _context.Equipments.Where(e => e.Id == equipmentId).First();
+    }
+
+    public bool NinjaHasItemInCategory(int ninjaId, string equipmentCategory)
+    {
+        return _context.NinjaEquipment.Where(ne => ne.NinjaId == ninjaId).Any(ne => ne.Equipment.Category == equipmentCategory);
     }
 }
 

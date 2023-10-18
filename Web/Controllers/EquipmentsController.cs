@@ -74,13 +74,13 @@ namespace Web.Controllers
         public IActionResult Buy(int equipmentId, int ninjaId)
         {
             var ninja = repository.GetNinja(ninjaId);
+            ninja.NinjaEquipment = repository.GetOwnedEquipmentList(ninjaId);
             var equipment = repository.GetEquipment(equipmentId);
 
             var equipmentCategory = equipment.Category;
-            Equipment? existingCategoryEquipment = repository.GetOwnedEquipmentList(ninjaId).Select(ne => ne.Equipment).FirstOrDefault(e => e?.Category == equipmentCategory);
+            bool hasItemInCategory = repository.NinjaHasItemInCategory(ninjaId, equipmentCategory);
 
-
-            if (ninja != null && equipment != null && existingCategoryEquipment == null)
+            if (ninja != null && equipment != null && !hasItemInCategory)
             {
                 // cost of equipment
                 int equipmentCost = equipment.ValueInGold;
@@ -97,11 +97,7 @@ namespace Web.Controllers
                         EquipmentId = equipment.Id,
                         ValueAtPurchase = equipmentCost
                     };
-
-                    // Add NinjaEquipment to database
                     _context.NinjaEquipment.Add(ninjaEquipment);
-
-                    // Save changes to database
                     _context.SaveChanges();
 
                 }
