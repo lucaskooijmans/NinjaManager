@@ -6,7 +6,9 @@
 }
 
 <h1>Index</h1>
-<form asp-action="Index" asp-controller="Equipments" method="post">
+<form method="post" asp-action="Filter" asp-controller="Equipments">
+    <input type="hidden" name="returnUrl" value="Index" /> <!-- View1 is de oorspronkelijke view -->
+
     <div class="form-group">
         <label asp-for="SelectedCategory">Select Category:</label>
         <select asp-for="SelectedCategory" asp-items="Html.GetEnumSelectList<EquipmentCategory>()" class="form-control">
