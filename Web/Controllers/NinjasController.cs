@@ -35,22 +35,6 @@ public class NinjasController : Controller
             return NotFound();
         }
 
-        //// Calculate the total strength, agility, and intelligence
-        //int totalStrength = 0;
-        //int totalAgility = 0;
-        //int totalIntelligence = 0;
-
-        //foreach (var ninjaEquipment in ninja.NinjaEquipment)
-        //{
-        //    totalStrength += ninjaEquipment.Equipment.Strength;
-        //    totalAgility += ninjaEquipment.Equipment.Agility;
-        //    totalIntelligence += ninjaEquipment.Equipment.Intelligence;
-        //}
-
-        //ViewData["TotalStrength"] = totalStrength;
-        //ViewData["TotalAgility"] = totalAgility;
-        //ViewData["TotalIntelligence"] = totalIntelligence;
-
         return View(ninja);
     }
 
@@ -173,11 +157,10 @@ public class NinjasController : Controller
         return (_context.Ninjas?.Any(e => e.Id == id)).GetValueOrDefault();
     }
 
-    public async Task<IActionResult> EquipmentDetails(int id)
+    public async Task<IActionResult> ClearInventory(int id)
     {
         var ninja = await _context.Ninjas
             .Include(n => n.NinjaEquipment)
-            .ThenInclude(ne => ne.Equipment)
             .FirstOrDefaultAsync(n => n.Id == id);
 
         if (ninja == null)
@@ -185,23 +168,19 @@ public class NinjasController : Controller
             return NotFound();
         }
 
-        // Calculate the total strength, agility, and intelligence
-        int totalStrength = 0;
-        int totalAgility = 0;
-        int totalIntelligence = 0;
+        // Calculate the total value of the cleared equipment and add it to the ninja's gold
+        int totalValue = ninja.NinjaEquipment.Sum(ne => ne.ValueAtPurchase);
+        ninja.Gold += totalValue;
 
-        foreach (var ninjaEquipment in ninja.NinjaEquipment)
-        {
-            totalStrength += ninjaEquipment.Equipment.Strength;
-            totalAgility += ninjaEquipment.Equipment.Agility;
-            totalIntelligence += ninjaEquipment.Equipment.Intelligence;
-        }
+        // Clear the ninja's inventory
+        ninja.NinjaEquipment.Clear();
 
-        ViewData["TotalStrength"] = totalStrength;
-        ViewData["TotalAgility"] = totalAgility;
-        ViewData["TotalIntelligence"] = totalIntelligence;
+        // Update the ninja and save changes
+        _context.Update(ninja);
+        await _context.SaveChangesAsync();
 
-        return View(ninja);
+        // Reload the Details view with the updated ninja
+        return View("Details", ninja);
     }
 
 

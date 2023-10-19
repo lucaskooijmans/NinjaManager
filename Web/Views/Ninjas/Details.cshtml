@@ -19,7 +19,7 @@
         Total Intelligence: @Model.NinjaEquipment.Sum(ne => ne.Equipment.Intelligence)
     </p>
     <p>
-        Total Equipment Value In Gold: @Model.NinjaEquipment.Sum(ne => ne.ValueAtPurchase) @*// Of 'ne.Equipment.ValueInGold' ?*@
+        Total Equipment Value In Gold: @Model.NinjaEquipment.Sum(ne => ne.Equipment.ValueInGold)
     </p>
     <section class="layout" style="width:100%;display:flex;gap:16px;">
         <div class="grow1" style="flex-grow:1;">
@@ -91,4 +91,5 @@
 </div>
 <div>
     <a asp-action="Index">Back to List</a>
+    <a asp-controller="Ninjas" asp-action="ClearInventory" asp-route-id="@Model.Id">Clear Inventory</a>
 </div>
