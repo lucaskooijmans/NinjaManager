@@ -12,7 +12,6 @@ public class Repository : IRepository
         _context = context;
     }
 
-
     public List<Equipment> GetEquipmentList()
     {
         return _context.Equipments.ToList();
