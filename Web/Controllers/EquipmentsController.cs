@@ -112,6 +112,30 @@ namespace Web.Controllers
             // Return to the store
             return View("Store", equipmentViewModel);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> Sell(int equipmentId, int ninjaId)
+        {
+            var ninja = repository.GetNinja(ninjaId);
+            ninja.NinjaEquipment = repository.GetOwnedEquipmentList(ninjaId);
+            var equipment = repository.GetEquipment(equipmentId);
+
+            if (ninja != null && equipment != null)
+            {
+                // Check if the ninja owns the equipment
+                var ninjaEquipment = ninja.NinjaEquipment.FirstOrDefault(ne => ne.EquipmentId == equipmentId);
+
+                // sell value, in this case this is the value at purchase
+                int sellValue = ninjaEquipment.ValueAtPurchase;
+                ninja.Gold += sellValue;
+
+                // Remove equipment from inventory
+                _context.NinjaEquipment.Remove(ninjaEquipment);
+                await _context.SaveChangesAsync();
+            }
+            return RedirectToAction("Store", new { ninjaId });
+        }
+
         // GET: Equipments/Details/5
         public async Task<IActionResult> Details(int? id)
         {
