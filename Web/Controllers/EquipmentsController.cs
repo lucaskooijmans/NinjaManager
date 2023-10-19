@@ -33,7 +33,7 @@ namespace Web.Controllers
             return View("Store", equipmentViewModel);
         }
 
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
             equipmentViewModel = new EquipmentViewModel
             {
@@ -43,7 +43,7 @@ namespace Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Filter(EquipmentCategory? selectedCategory, int? ninjaId, string returnUrl)
+        public IActionResult Filter(EquipmentCategory? selectedCategory, int? ninjaId, string returnUrl)
         {
             var equipmentList = repository.GetEquipmentList();
             if (selectedCategory.HasValue)

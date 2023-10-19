@@ -25,10 +25,7 @@ public class NinjasController : Controller
     // GET: Ninjas/Details/5
     public async Task<IActionResult> Details(int? id)
     {
-        var ninja = await _context.Ninjas
-            .Include(n => n.NinjaEquipment)
-            .ThenInclude(ne => ne.Equipment)
-            .FirstOrDefaultAsync(n => n.Id == id);
+        var ninja = await _context.Ninjas.Include(n => n.NinjaEquipment).ThenInclude(ne => ne.Equipment).FirstOrDefaultAsync(n => n.Id == id);
 
         if (ninja == null)
         {
