@@ -13,11 +13,13 @@
         <select asp-for="SelectedCategory" asp-items="Html.GetEnumSelectList<EquipmentCategory>()" class="form-control">
             <option value="">-- All Categories --</option>
         </select>
+        <br />
         <button type="submit" class="btn btn-primary">Filter</button>
     </div>
 </form>
+<br />
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create"><button>Create New</button></a>
 </p>
 <table class="table">
     <thead>
@@ -53,8 +55,8 @@
                 @Html.DisplayFor(modelItem => item.Agility)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                | <a asp-action="Edit" asp-route-id="@item.Id"><button>Edit</button></a> |
+                <a asp-action="Delete" asp-route-id="@item.Id"><button>Delete</button></a> |
             </td>
         </tr>
 }
