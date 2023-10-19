@@ -5,10 +5,9 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>Gear Overview</h1>
 <form method="post" asp-action="Filter" asp-controller="Equipments">
-    <input type="hidden" name="returnUrl" value="Index" /> <!-- View1 is de oorspronkelijke view -->
-
+    <input type="hidden" name="returnUrl" value="Index" />
     <div class="form-group">
         <label asp-for="SelectedCategory">Select Category:</label>
         <select asp-for="SelectedCategory" asp-items="Html.GetEnumSelectList<EquipmentCategory>()" class="form-control">
@@ -55,7 +54,6 @@
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
                 <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
             </td>
         </tr>
