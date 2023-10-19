@@ -90,6 +90,7 @@
     </section>
 </div>
 <div>
-    <a asp-action="Index">Back to List</a>
-    <a asp-controller="Ninjas" asp-action="ClearInventory" asp-route-id="@Model.Id">Clear Inventory</a>
+    <a asp-controller="Ninjas" asp-action="ClearInventory" asp-route-id="@Model.Id"><button>Clear Inventory</button></a>
+    <br />
+    <a asp-action="Index"><button>< Back</button></a>
 </div>
