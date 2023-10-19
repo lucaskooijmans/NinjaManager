@@ -1,4 +1,5 @@
-﻿using Data;
+﻿using System.Threading.Tasks;
+using Data;
 using Data.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -24,17 +25,31 @@ public class NinjasController : Controller
     // GET: Ninjas/Details/5
     public async Task<IActionResult> Details(int? id)
     {
-        if (id == null || _context.Ninjas == null)
-        {
-            return NotFound();
-        }
-
         var ninja = await _context.Ninjas
-            .FirstOrDefaultAsync(m => m.Id == id);
+            .Include(n => n.NinjaEquipment)
+            .ThenInclude(ne => ne.Equipment)
+            .FirstOrDefaultAsync(n => n.Id == id);
+
         if (ninja == null)
         {
             return NotFound();
         }
+
+        //// Calculate the total strength, agility, and intelligence
+        //int totalStrength = 0;
+        //int totalAgility = 0;
+        //int totalIntelligence = 0;
+
+        //foreach (var ninjaEquipment in ninja.NinjaEquipment)
+        //{
+        //    totalStrength += ninjaEquipment.Equipment.Strength;
+        //    totalAgility += ninjaEquipment.Equipment.Agility;
+        //    totalIntelligence += ninjaEquipment.Equipment.Intelligence;
+        //}
+
+        //ViewData["TotalStrength"] = totalStrength;
+        //ViewData["TotalAgility"] = totalAgility;
+        //ViewData["TotalIntelligence"] = totalIntelligence;
 
         return View(ninja);
     }
@@ -157,5 +172,37 @@ public class NinjasController : Controller
     {
         return (_context.Ninjas?.Any(e => e.Id == id)).GetValueOrDefault();
     }
-}
 
+    public async Task<IActionResult> EquipmentDetails(int id)
+    {
+        var ninja = await _context.Ninjas
+            .Include(n => n.NinjaEquipment)
+            .ThenInclude(ne => ne.Equipment)
+            .FirstOrDefaultAsync(n => n.Id == id);
+
+        if (ninja == null)
+        {
+            return NotFound();
+        }
+
+        // Calculate the total strength, agility, and intelligence
+        int totalStrength = 0;
+        int totalAgility = 0;
+        int totalIntelligence = 0;
+
+        foreach (var ninjaEquipment in ninja.NinjaEquipment)
+        {
+            totalStrength += ninjaEquipment.Equipment.Strength;
+            totalAgility += ninjaEquipment.Equipment.Agility;
+            totalIntelligence += ninjaEquipment.Equipment.Intelligence;
+        }
+
+        ViewData["TotalStrength"] = totalStrength;
+        ViewData["TotalAgility"] = totalAgility;
+        ViewData["TotalIntelligence"] = totalIntelligence;
+
+        return View(ninja);
+    }
+
+
+}
