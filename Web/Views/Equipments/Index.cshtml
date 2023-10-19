@@ -13,14 +13,12 @@
         <select asp-for="SelectedCategory" asp-items="Html.GetEnumSelectList<EquipmentCategory>()" class="form-control">
             <option value="">-- All Categories --</option>
         </select>
-        <br />
         <button type="submit" class="btn btn-primary">Filter</button>
     </div>
 </form>
 <br />
-<p>
-    <a asp-action="Create"><button>Create New</button></a>
-</p>
+
+    <a asp-action="Create" class="btn btn-success">Create New</a>
 <table class="table">
     <thead>
         <tr>
@@ -34,31 +32,32 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in @Model.EquipmentList) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ValueInGold)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Category)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Strength)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Intelligence)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Agility)
-            </td>
-            <td>
-                | <a asp-action="Edit" asp-route-id="@item.Id"><button>Edit</button></a> |
-                <a asp-action="Delete" asp-route-id="@item.Id"><button>Delete</button></a> |
-            </td>
-        </tr>
-}
+        @foreach (var item in @Model.EquipmentList)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ValueInGold)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Category)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Strength)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Intelligence)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Agility)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-secondary">Edit</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
