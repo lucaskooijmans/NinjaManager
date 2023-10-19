@@ -6,9 +6,8 @@
 
 <h1>Ninjas</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+<a asp-action="Create"><button>Create New</button></a>
+
 <table class="table">
     <thead>
         <tr>
@@ -31,10 +30,10 @@
                 @Html.DisplayFor(modelItem => item.Gold)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a> |
-                <a asp-controller="Equipments" asp-route-ninjaId="@item.Id" asp-action="Store">Store</a>
+                | <a asp-action="Edit" asp-route-id="@item.Id"><button>Edit</button></a> |
+                <a asp-action="Details" asp-route-id="@item.Id"><button>Details</button></a> |
+                <a asp-action="Delete" asp-route-id="@item.Id"><button>Delete</button></a> |
+                <a asp-controller="Equipments" asp-route-ninjaId="@item.Id" asp-action="Store"><button>Store</button></a> |
             </td>
         </tr>
 }
