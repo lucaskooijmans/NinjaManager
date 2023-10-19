@@ -51,8 +51,6 @@ public class NinjasController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create([Bind("Id,Name,Gold")] Ninja ninja)
     {
-
-        ModelState.Remove("NinjaEquipment"); // remove this from check, cuz it will be null 
         if (ModelState.IsValid)
         {
             _context.Add(ninja);
@@ -89,8 +87,6 @@ public class NinjasController : Controller
         {
             return NotFound();
         }
-
-        ModelState.Remove("NinjaEquipment"); // remove this from check, cuz it will be null 
 
         if (ModelState.IsValid)
         {
