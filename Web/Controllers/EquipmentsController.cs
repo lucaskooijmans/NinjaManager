@@ -124,16 +124,18 @@ namespace Web.Controllers
             {
                 // Check if the ninja owns the equipment
                 var ninjaEquipment = ninja.NinjaEquipment.FirstOrDefault(ne => ne.EquipmentId == equipmentId);
+                if (ninjaEquipment != null)
+                {
+                    // sell value, in this case this is the value at purchase
+                    int sellValue = ninjaEquipment.ValueAtPurchase;
+                    ninja.Gold += sellValue;
 
-                // sell value, in this case this is the value at purchase
-                int sellValue = ninjaEquipment.ValueAtPurchase;
-                ninja.Gold += sellValue;
-
-                // Remove equipment from inventory
-                _context.NinjaEquipment.Remove(ninjaEquipment);
-                await _context.SaveChangesAsync();
+                    // Remove equipment from inventory
+                    _context.NinjaEquipment.Remove(ninjaEquipment);
+                    await _context.SaveChangesAsync();                  
+                }
             }
-            return RedirectToAction("Store", new { ninjaId });
+            return RedirectToAction("Store", new { ninjaId }); 
         }
 
         // GET: Equipments/Details/5
