@@ -240,6 +240,8 @@ namespace Web.Controllers
             {
                 return NotFound();
             }
+            var numNinjas = _context.NinjaEquipment.Count(ne => ne.EquipmentId == id);
+            ViewData["NumNinjas"] = numNinjas;
 
             return View(equipment);
         }
@@ -249,17 +251,29 @@ namespace Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Equipments == null)
-            {
-                return Problem("Entity set 'NinjaEquipmentDbContext.Equipments'  is null.");
-            }
             var equipment = await _context.Equipments.FindAsync(id);
+
             if (equipment != null)
             {
-                _context.Equipments.Remove(equipment);
-            }
+                // Find all ninjas who own this equipment
+                var owningNinjas = _context.NinjaEquipment
+                    .Where(ne => ne.EquipmentId == id)
+                    .ToList();
 
-            await _context.SaveChangesAsync();
+                int equipmentValue = equipment.ValueInGold;
+
+                if (owningNinjas.Any())
+                {
+                    foreach (var ninja in owningNinjas) //ninja == ninjaEquipment
+                    {
+                        ninja.Ninja = repository.GetNinja(ninja.NinjaId);
+                        ninja.Ninja.Gold += ninja.ValueAtPurchase; // or equipment.ValueInGold?
+                    }
+                }
+                // Remove equipment
+                _context.Equipments.Remove(equipment);
+                await _context.SaveChangesAsync();
+            }
             return RedirectToAction(nameof(Index));
         }
     }
