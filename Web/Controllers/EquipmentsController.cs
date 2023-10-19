@@ -20,17 +20,19 @@ namespace Web.Controllers
         }
 
         // GET: Equipments
-        public IActionResult Store(int ninjaId)
+        public async Task<IActionResult> Store(int ninjaId)
         {
             equipmentViewModel = new EquipmentViewModel
             {
-                Ninja = _context.Ninjas.Where(e => e.Id == ninjaId).First(),
-
+                Ninja = await _context.Ninjas.Where(e => e.Id == ninjaId).FirstOrDefaultAsync(),
                 EquipmentList = repository.GetEquipmentList()
             };
+
             equipmentViewModel.Ninja.NinjaEquipment = repository.GetOwnedEquipmentList(ninjaId);
-            return View(equipmentViewModel);
+
+            return View("Store", equipmentViewModel);
         }
+
         public async Task<IActionResult> Index()
         {
             equipmentViewModel = new EquipmentViewModel
@@ -41,23 +43,18 @@ namespace Web.Controllers
         }
 
         [HttpPost]
-        public IActionResult Filter(EquipmentCategory? selectedCategory, int? ninjaId, string returnUrl)
+        public async Task<IActionResult> Filter(EquipmentCategory? selectedCategory, int? ninjaId, string returnUrl)
         {
             var equipmentList = repository.GetEquipmentList();
-
-
             if (selectedCategory.HasValue)
             {
                 equipmentList = equipmentList.Where(e => e.Category == selectedCategory.Value.ToString()).ToList();
             }
-
             var viewModel = new EquipmentViewModel
             {
                 EquipmentList = equipmentList,
                 SelectedCategory = selectedCategory
             };
-
-
             if (returnUrl == "Index")
             {
                 return View("Index", viewModel);
@@ -65,13 +62,14 @@ namespace Web.Controllers
             else if (returnUrl == "Store")
             {
                 viewModel.Ninja = repository.GetNinja((int)ninjaId);
+                viewModel.Ninja.NinjaEquipment = repository.GetOwnedEquipmentList((int)ninjaId);
                 return View("Store", viewModel);
             }
             return View();
         }
 
         [HttpPost]
-        public IActionResult Buy(int equipmentId, int ninjaId)
+        public async Task<IActionResult> Buy(int equipmentId, int ninjaId)
         {
             var ninja = repository.GetNinja(ninjaId);
             ninja.NinjaEquipment = repository.GetOwnedEquipmentList(ninjaId);
@@ -82,12 +80,12 @@ namespace Web.Controllers
 
             if (ninja != null && equipment != null && !hasItemInCategory)
             {
-                // cost of equipment
+                // Cost of equipment
                 int equipmentCost = equipment.ValueInGold;
 
                 // Check if the ninja has enough gold
                 if (ninja.Gold >= equipmentCost)
-                {                   
+                {
                     ninja.Gold -= equipmentCost;
 
                     // Create new NinjaEquipment to save purchase
@@ -98,20 +96,20 @@ namespace Web.Controllers
                         ValueAtPurchase = equipmentCost
                     };
                     _context.NinjaEquipment.Add(ninjaEquipment);
-                    _context.SaveChanges();
+                    await _context.SaveChangesAsync(); // Asynchrone opslaan
 
                 }
-                // possible errors
+                // Possible errors
                 else ModelState.AddModelError(string.Empty, "Not enough gold to make the purchase.");
             }
-            else ModelState.AddModelError(string.Empty, "Ninja already has equipment in catagory: " + equipment.Category);
+            else ModelState.AddModelError(string.Empty, "Ninja already has equipment in category: " + equipment.Category);
 
             equipmentViewModel = new EquipmentViewModel
             {
                 Ninja = ninja,
                 EquipmentList = repository.GetEquipmentList()
             };
-            // return to store
+            // Return to the store
             return View("Store", equipmentViewModel);
         }
         // GET: Equipments/Details/5
@@ -191,24 +189,12 @@ namespace Web.Controllers
 
             if (ModelState.IsValid)
             {
-                try
-                {
-                    var category = Enum.Parse(typeof(EquipmentCategory), equipment.Category).ToString(); // parse categorynumber to stringvalue
-                    equipment.Category = category;
-                    _context.Update(equipment);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!EquipmentExists(equipment.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+
+                var category = Enum.Parse(typeof(EquipmentCategory), equipment.Category).ToString(); // parse categorynumber to stringvalue
+                equipment.Category = category;
+                _context.Update(equipment);
+                await _context.SaveChangesAsync();
+
                 return RedirectToAction(nameof(Index));
             }
             return View(equipment);
@@ -249,11 +235,6 @@ namespace Web.Controllers
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool EquipmentExists(int id)
-        {
-            return (_context.Equipments?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }
