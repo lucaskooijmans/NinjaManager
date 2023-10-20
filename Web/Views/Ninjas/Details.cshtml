@@ -8,7 +8,7 @@
 
 <div>
     <hr />
-    <a asp-action="Index"><button>< Back</button></a>
+    <a asp-action="Index" class="btn btn-secondary">Back</a>
     <p>
         Gold in wallet: @Html.DisplayFor(model => model.Gold)
     </p>
@@ -91,5 +91,5 @@
     </section>
 </div>
 <div>
-    <a asp-controller="Ninjas" asp-action="ClearInventory" asp-route-id="@Model.Id"><button>Clear Inventory</button></a>
+    <a asp-controller="Ninjas" asp-action="ClearInventory" asp-route-id="@Model.Id" class="btn btn-danger">Clear Inventory</a>
 </div>

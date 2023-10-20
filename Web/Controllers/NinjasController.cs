@@ -25,10 +25,7 @@ public class NinjasController : Controller
     // GET: Ninjas/Details/5
     public async Task<IActionResult> Details(int? id)
     {
-        var ninja = await _context.Ninjas
-            .Include(n => n.NinjaEquipment)
-            .ThenInclude(ne => ne.Equipment)
-            .FirstOrDefaultAsync(n => n.Id == id);
+        var ninja = await _context.Ninjas.Include(n => n.NinjaEquipment).ThenInclude(ne => ne.Equipment).FirstOrDefaultAsync(n => n.Id == id);
 
         if (ninja == null)
         {
@@ -51,8 +48,6 @@ public class NinjasController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create([Bind("Id,Name,Gold")] Ninja ninja)
     {
-
-        ModelState.Remove("NinjaEquipment"); // remove this from check, cuz it will be null 
         if (ModelState.IsValid)
         {
             _context.Add(ninja);
@@ -89,8 +84,6 @@ public class NinjasController : Controller
         {
             return NotFound();
         }
-
-        ModelState.Remove("NinjaEquipment"); // remove this from check, cuz it will be null 
 
         if (ModelState.IsValid)
         {
